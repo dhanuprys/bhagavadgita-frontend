@@ -1,0 +1,362 @@
+"use client";
+
+import type React from "react";
+
+import { useState, useRef, useEffect, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Send, Sparkles } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { ChatMessage } from "@/components/optimized-chat-message";
+import { ChatHeader } from "@/components/chat-header";
+import { ThinkingAnimation } from "@/components/thinking-animation";
+import { ErrorAlert } from "@/components/error-alert";
+import { WelcomeScreen } from "@/components/welcome-screen";
+import { getRandomResponse, welcomeQuickReplies } from "@/lib/mock-responses";
+import { saveConversation, loadConversation } from "@/lib/storage";
+import type { ChatMessage as ChatMessageType, ChatState } from "@/types/chat";
+import axios from "axios";
+import { useIsMobile } from "./hooks/use-mobile";
+import { shuffle } from 'fast-shuffle';
+
+export default function BhagavadAI() {
+  const isMobile = useIsMobile();
+  const [chatState, setChatState] = useState<ChatState>({
+    messages: [],
+    isThinking: false,
+    error: null,
+    input: "",
+    conversationStarted: false,
+  });
+
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Load conversation on mount
+  useEffect(() => {
+    const savedMessages = loadConversation();
+    if (savedMessages.length > 0) {
+      setChatState((prev) => ({
+        ...prev,
+        messages: savedMessages,
+        conversationStarted: true,
+      }));
+    }
+  }, []);
+
+  // Save conversation whenever messages change
+  useEffect(() => {
+    if (chatState.messages.length > 0) {
+      saveConversation(chatState.messages);
+    }
+  }, [chatState.messages]);
+
+  const scrollToBottom = useCallback(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }, []);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [chatState.messages, chatState.isThinking, scrollToBottom]);
+
+  const simulateAIResponse = useCallback(async () => {
+    const mockResponse = getRandomResponse();
+    await new Promise((resolve) =>
+      setTimeout(resolve, mockResponse.delay || 2000)
+    );
+
+    if (Math.random() < 0.03) {
+      throw new Error("Unable to connect to BhagavadAI. Please try again.");
+    }
+
+    return mockResponse;
+  }, []);
+
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+
+      if (!chatState.input.trim() || chatState.isThinking) return;
+
+      const userMessage: ChatMessageType = {
+        id: Date.now().toString(),
+        role: "user",
+        content: chatState.input.trim(),
+        timestamp: new Date(),
+      };
+
+      setChatState((prev) => ({
+        ...prev,
+        messages: [...prev.messages, userMessage],
+        input: "",
+        isThinking: true,
+        error: null,
+        conversationStarted: true,
+      }));
+
+      try {
+        const response = await axios.post("http://localhost:8000/prompt", {
+          message: chatState.input,
+        });
+
+        if (response.status !== 200) {
+          throw new Error("An error occured!");
+        }
+
+        const isNotFound = response.data.answer.includes('tidak ditemukan landasan') || response.data.answer.includes('tidak sesuai konteks');
+
+        const aiMessage: ChatMessageType = {
+          id: (Date.now() + 1).toString(),
+          role: "assistant",
+          content: response.data.answer,
+          context: response.data.context,
+          quickReplies: isNotFound ? shuffle(welcomeQuickReplies).slice(0, 3) : [],
+          timestamp: new Date(),
+        };
+
+        setChatState((prev) => ({
+          ...prev,
+          messages: [...prev.messages, aiMessage],
+          isThinking: false,
+        }));
+      } catch (error) {
+        setChatState((prev) => ({
+          ...prev,
+          isThinking: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : "An unexpected error occurred",
+        }));
+      }
+    },
+    [chatState.input, chatState.isThinking, simulateAIResponse]
+  );
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setChatState((prev) => ({ ...prev, input: e.target.value }));
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      if (textareaRef.current) {
+        const form = textareaRef.current.closest("form");
+        if (form) {
+          const submitEvent = new Event("submit", {
+            cancelable: true,
+            bubbles: true,
+          });
+          form.dispatchEvent(submitEvent);
+        }
+      }
+    }
+  };
+
+  const handleQuickReply = (reply: string) => {
+    setChatState((prev) => ({ ...prev, input: reply }));
+    setTimeout(() => {
+      if (textareaRef.current) {
+        const form = textareaRef.current.closest("form");
+        if (form) {
+          const submitEvent = new Event("submit", {
+            cancelable: true,
+            bubbles: true,
+          });
+          form.dispatchEvent(submitEvent);
+        }
+      }
+    }, 100);
+  };
+
+  const dismissError = () => {
+    setChatState((prev) => ({ ...prev, error: null }));
+  };
+
+  if (isMobile) {
+    return (
+      <div className="block sm:hidden min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100/50">
+        {/* Mobile Header */}
+        <div className="bg-gradient-to-r from-slate-50 to-slate-100/80 backdrop-blur-sm border-b border-slate-200/60 p-4 sticky top-0 z-10">
+          <ChatHeader
+            messageCount={chatState.messages.length}
+            isMobile={true}
+          />
+        </div>
+
+        {/* Mobile Chat Container */}
+        <div className="flex flex-col h-[calc(100vh-80px)]">
+          {/* Mobile Messages Area */}
+          <div className="flex-1 overflow-y-auto bg-white">
+            {/* Error Alert */}
+            {chatState.error && (
+              <div className="p-4 pb-0">
+                <ErrorAlert error={chatState.error} onDismiss={dismissError} />
+              </div>
+            )}
+
+            {/* Welcome Screen */}
+            {!chatState.conversationStarted && (
+              <div className="p-4">
+                <WelcomeScreen
+                  onQuickReply={handleQuickReply}
+                  disabled={chatState.isThinking}
+                />
+              </div>
+            )}
+
+            {/* Messages */}
+            <div className="pt-2">
+              <AnimatePresence mode="popLayout">
+                {chatState.messages.map((message, index) => (
+                  <ChatMessage
+                    key={message.id}
+                    message={message}
+                    index={index}
+                    onQuickReply={handleQuickReply}
+                    disabled={chatState.isThinking}
+                  />
+                ))}
+
+                {chatState.isThinking && (
+                  <motion.div key="thinking">
+                    <ThinkingAnimation />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Mobile Input Area */}
+          <div className="border-t bg-slate-50/95 backdrop-blur-sm p-4 sticky bottom-0">
+            <form onSubmit={handleSubmit} className="flex gap-3 items-end">
+              <div className="flex-1">
+                <Textarea
+                  ref={textareaRef}
+                  value={chatState.input}
+                  onChange={handleInputChange}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Ask for guidance..."
+                  className="min-h-[44px] max-h-[100px] resize-none border-slate-200/60 focus:border-slate-300 focus:ring-slate-200/50 bg-white/95 backdrop-blur-sm text-slate-700 placeholder:text-slate-400 text-sm rounded-2xl"
+                  disabled={chatState.isThinking}
+                />
+              </div>
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Button
+                  type="submit"
+                  disabled={!chatState.input.trim() || chatState.isThinking}
+                  className="bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800 text-white border-0 w-11 h-11 rounded-full shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center"
+                >
+                  <Send className="w-4 h-4" />
+                </Button>
+              </motion.div>
+            </form>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+      <div className="hidden sm:block min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100/50">
+        <div className="container mx-auto px-4 py-6 max-w-5xl">
+          {/* Chat Container */}
+          <Card className="shadow-2xl border-0 !py-0 bg-white/80 backdrop-blur-sm overflow-hidden">
+            <div className="border-b bg-gradient-to-r from-slate-50 to-slate-100/80 backdrop-blur-sm p-4">
+              <ChatHeader messageCount={chatState.messages.length} />
+            </div>
+
+            <CardContent className="p-0">
+              {/* Messages Area */}
+              <div className="h-[60vh] overflow-y-auto bg-white">
+                {/* Error Alert - Inside messages area */}
+                {chatState.error && (
+                  <div className="p-6 pb-0">
+                    <ErrorAlert
+                      error={chatState.error}
+                      onDismiss={dismissError}
+                    />
+                  </div>
+                )}
+
+                {/* Welcome Screen */}
+                {!chatState.conversationStarted && (
+                  <div className="p-6">
+                    <WelcomeScreen
+                      onQuickReply={handleQuickReply}
+                      disabled={chatState.isThinking}
+                    />
+                  </div>
+                )}
+
+                {/* Messages */}
+                <div className="pt-4">
+                  <AnimatePresence mode="popLayout">
+                    {chatState.messages.map((message, index) => (
+                      <ChatMessage
+                        key={message.id}
+                        message={message}
+                        index={index}
+                        onQuickReply={handleQuickReply}
+                        disabled={chatState.isThinking}
+                      />
+                    ))}
+
+                    {chatState.isThinking && (
+                      <motion.div key="thinking">
+                        <ThinkingAnimation />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                <div ref={messagesEndRef} />
+              </div>
+
+              {/* Input Area */}
+              <div className="border-t bg-slate-50/80 backdrop-blur-sm p-6">
+                <form onSubmit={handleSubmit} className="flex gap-4">
+                  <div className="flex-1">
+                    <Textarea
+                      ref={textareaRef}
+                      value={chatState.input}
+                      onChange={handleInputChange}
+                      onKeyDown={handleKeyDown}
+                      placeholder="Tanyakan seputar Bhagavad Gita..."
+                      className="min-h-[60px] max-h-[120px] resize-none border-slate-200/60 focus:border-slate-300 focus:ring-slate-200/50 bg-white/80 backdrop-blur-sm text-slate-700 placeholder:text-slate-400"
+                      disabled={chatState.isThinking}
+                    />
+                  </div>
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <Button
+                      type="submit"
+                      disabled={!chatState.input.trim() || chatState.isThinking}
+                      className="self-end bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800 text-white border-0 px-6 py-3 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                    >
+                      <Send className="w-4 h-4" />
+                    </Button>
+                  </motion.div>
+                </form>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Footer */}
+          <div className="text-center mt-8 text-slate-500 text-sm">
+            <p>
+              Powered by <strong className="font-bold">Dedan Labs</strong>
+            </p>
+          </div>
+        </div>
+      </div>
+  );
+}
