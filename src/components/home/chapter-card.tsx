@@ -41,7 +41,7 @@ export function ChapterCard({ chapter }: ChapterCardProps) {
 
                 <CardContent className="pt-0">
                     <CardDescription className="text-sm leading-relaxed text-gray-600 mb-4">
-                        {chapter.summary.slice(0, 100)}
+                        {chapter.summary.slice(0, 100)}...
                     </CardDescription>
 
                     <div className="flex items-center text-gray-500 text-sm font-medium group-hover:text-gray-700 transition-colors">
