@@ -1,4 +1,4 @@
-import { BookIcon, LoaderIcon } from 'lucide-react';
+import { BookIcon } from 'lucide-react';
 
 export default function FullPageLoading() {
     return (
