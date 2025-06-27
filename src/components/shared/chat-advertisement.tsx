@@ -102,7 +102,7 @@ export function ChatAdvertisement({ compact = false }: ChatAdvertisementProps) {
                             <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-violet-100 border border-violet-200">
                                 <Sparkles className="w-3 h-3 text-violet-600" />
                                 <span className="text-xs font-medium text-violet-700">
-                                    Bertenaga AI
+                                    enhanched AI
                                 </span>
                             </div>
                         </div>
