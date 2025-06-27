@@ -55,7 +55,7 @@ export default function Hero() {
                                     variant="ghost"
                                     className="text-sm md:text-base bg-gradient-to-br from-purple-800 to-purple-500 text-white rounded-full hover:text-white hover:cursor-pointer hover:scale-105 transition-transform"
                                 >
-                                    Tanya di AI
+                                    Tanya AI
                                     <SparkleIcon />
                                 </Button>
                             </NavLink>
