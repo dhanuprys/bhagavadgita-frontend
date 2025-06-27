@@ -1,5 +1,7 @@
 import axios from 'axios';
 
-export default function fetcher<T>(url: string) {
-    return axios.get<T>(url).then((response) => response.data);
+export default async function fetcher<T>(url: string) {
+    return await axios
+        .get<T>(url, { baseURL: import.meta.env.VITE_API_BASE_URL })
+        .then((response) => response.data);
 }

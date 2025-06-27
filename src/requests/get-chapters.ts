@@ -3,7 +3,7 @@ import useSWRImmutable from 'swr/immutable';
 import fetcher from '../lib/fetcher';
 
 export function getChapters() {
-    const response = useSWRImmutable('http://localhost:8000/chapter', (url) =>
+    const response = useSWRImmutable('/chapter', (url) =>
         fetcher<Chapter[]>(url)
     );
 
@@ -11,9 +11,8 @@ export function getChapters() {
 }
 
 export function getChapterDetail(chapterNumber: number) {
-    const response = useSWRImmutable(
-        `http://localhost:8000/chapter/${chapterNumber}`,
-        (url) => fetcher<Chapter>(url)
+    const response = useSWRImmutable(`/chapter/${chapterNumber}`, (url) =>
+        fetcher<Chapter>(url)
     );
     return response;
 }

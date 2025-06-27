@@ -99,9 +99,12 @@ export default function Chat() {
 
             try {
                 const response = await axios.post(
-                    'http://localhost:8000/prompt',
+                    '/prompt',
                     {
                         message: chatState.input,
+                    },
+                    {
+                        baseURL: import.meta.env.VITE_API_BASE_URL,
                     }
                 );
 
