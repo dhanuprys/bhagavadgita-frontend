@@ -47,12 +47,13 @@ export default function Hero() {
                             <input
                                 type="text"
                                 placeholder="Tanyakan sesuatu.."
-                                className="flex-1 px-4 py-2 outline-0"
+                                className="text-sm md:text-base flex-1 md:px-4 md:py-2 outline-0"
                             />
                             <NavLink to="/chat">
                                 <Button
+                                    size="sm"
                                     variant="ghost"
-                                    className="bg-gradient-to-br from-purple-800 to-purple-500 text-white rounded-full hover:text-white hover:cursor-pointer hover:scale-105 transition-transform"
+                                    className="text-sm md:text-base bg-gradient-to-br from-purple-800 to-purple-500 text-white rounded-full hover:text-white hover:cursor-pointer hover:scale-105 transition-transform"
                                 >
                                     Tanya di AI
                                     <SparkleIcon />
