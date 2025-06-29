@@ -13,6 +13,7 @@ export interface ResponseContext {
 export interface ChatMessage {
     id: string;
     role: 'user' | 'assistant';
+    answer_system: 'intent' | 'semantic';
     content: string;
     context?: ResponseContext[];
     quickReplies?: string[];

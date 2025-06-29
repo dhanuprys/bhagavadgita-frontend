@@ -84,6 +84,7 @@ export default function Chat() {
             const userMessage: ChatMessageType = {
                 id: Date.now().toString(),
                 role: 'user',
+                answer_system: 'semantic',
                 content: chatState.input.trim(),
                 timestamp: new Date(),
             };
@@ -119,11 +120,10 @@ export default function Chat() {
                 const aiMessage: ChatMessageType = {
                     id: (Date.now() + 1).toString(),
                     role: 'assistant',
+                    answer_system: response.data.answer_system || 'semantic',
                     content: response.data.answer,
                     context: response.data.context,
-                    quickReplies: isNotFound
-                        ? shuffle(welcomeQuickReplies).slice(0, 3)
-                        : [],
+                    quickReplies: isNotFound ? response.data.suggestions : [],
                     timestamp: new Date(),
                 };
 

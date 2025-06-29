@@ -1,6 +1,13 @@
 import { memo } from 'react';
 import { motion } from 'framer-motion';
-import { Bot, User, Copy, Check, LinkIcon } from 'lucide-react';
+import {
+    Bot,
+    User,
+    Copy,
+    Check,
+    LinkIcon,
+    CircleCheckIcon,
+} from 'lucide-react';
 import { useState, useCallback } from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -101,8 +108,16 @@ const OptimizedChatMessage = memo(function ChatMessage({
                                     <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
                                 </div>
                             </div>
-                            <div className="text-sm font-medium text-purple-700">
-                                BhagavadAI
+                            <div className="flex gap-x-2">
+                                <div className="text-sm font-medium text-purple-700">
+                                    BhagavadAI
+                                </div>
+                                {message.answer_system === 'intent' && (
+                                    <span className="text-xs  px-2 py-1 rounded-full bg-green-600/10 text-green-600/80 flex items-center gap-x-1">
+                                        <CircleCheckIcon className="size-3" />
+                                        akurasi ditingkatkan
+                                    </span>
+                                )}
                             </div>
 
                             {/* Copy Button */}
@@ -138,7 +153,7 @@ const OptimizedChatMessage = memo(function ChatMessage({
                                                         <Badge
                                                             key={ctxIndex}
                                                             variant="secondary"
-                                                            className="bg-purple-50 text-grey-700 border border-purple-200/50 hover:bg-purple-100 transition-colors rounded-full hover:cursor-pointer md:px-4 md:py-2"
+                                                            className="bg-purple-50 text-xxs text-grey-700 border border-purple-200/50 hover:bg-purple-100 transition-colors rounded-full hover:cursor-pointer"
                                                         >
                                                             {ctx.label}
                                                         </Badge>
@@ -155,14 +170,19 @@ const OptimizedChatMessage = memo(function ChatMessage({
                                                             />
                                                         </DialogDescription>
                                                         <DialogFooter>
-                                                            <NavLink
-                                                                to={ctx.link}
-                                                            >
-                                                                <Button variant="secondary">
-                                                                    <LinkIcon />
-                                                                    buka sumber
-                                                                </Button>
-                                                            </NavLink>
+                                                            {ctx.link && (
+                                                                <NavLink
+                                                                    to={
+                                                                        ctx.link
+                                                                    }
+                                                                >
+                                                                    <Button variant="secondary">
+                                                                        <LinkIcon />
+                                                                        buka
+                                                                        sumber
+                                                                    </Button>
+                                                                </NavLink>
+                                                            )}
                                                         </DialogFooter>
                                                     </DialogContent>
                                                 </Dialog>
