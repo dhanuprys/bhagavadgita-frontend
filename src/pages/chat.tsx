@@ -13,12 +13,11 @@ import { ChatHeader } from '@/components/chat/chat-header';
 import { ThinkingAnimation } from '@/components/chat/thinking-animation';
 import { ErrorAlert } from '@/components/chat/error-alert';
 import { WelcomeScreen } from '@/components/chat/welcome-screen';
-import { getRandomResponse, welcomeQuickReplies } from '@/lib/mock-responses';
+import { getRandomResponse } from '@/lib/mock-responses';
 import { saveConversation, loadConversation } from '@/lib/storage';
 import type { ChatMessage as ChatMessageType, ChatState } from '@/types/chat';
 import axios from 'axios';
 import { useIsMobile } from '../hooks/use-mobile';
-import { shuffle } from 'fast-shuffle';
 
 export default function Chat() {
     const isMobile = useIsMobile();
