@@ -14,6 +14,7 @@ import { getVerseDetail } from '@/requests/get-verses';
 import { getChapterDetail } from '@/requests/get-chapters';
 import { VerseAudioPlayer } from '@/components/verse-detail/verse-audio-player';
 import FullPageLoading from '@/components/shared/full-page-loading';
+import { useTitle } from '@/hooks/use-title';
 
 export default function VerseDetailPage() {
     const { chapterNumber, verseNumber } = useParams<{
@@ -29,7 +30,8 @@ export default function VerseDetailPage() {
         chapterNum,
         verseNum
     );
-    // const relatedVerses = getRelatedVerses(chapterNum, verseNum);
+
+    useTitle(`BG ${chapterNum}.${verseNum}`);
 
     if (
         isChapterLoading ||

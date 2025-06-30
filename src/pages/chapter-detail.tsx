@@ -10,12 +10,15 @@ import NavigationBack from '@/components/chapter-detail/navigation-back';
 import SafeWidth from '@/components/safe-width';
 import { getChapterDetail } from '@/requests/get-chapters';
 import FullPageLoading from '@/components/shared/full-page-loading';
+import { useTitle } from '@/hooks/use-title';
 
 export default function ChapterDetailPage() {
     const { chapterNumber } = useParams<{ chapterNumber: string }>();
     const chapterNum = Number.parseInt(chapterNumber!);
     const { data: chapter, isLoading: isChapterLoading } =
         getChapterDetail(chapterNum);
+
+    useTitle(`Bab ${chapterNumber}`);
 
     if (isChapterLoading || chapter === undefined) {
         return <FullPageLoading />;

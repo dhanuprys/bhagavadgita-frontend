@@ -5,8 +5,10 @@ import Hero from '@/components/home/hero';
 import Chapters from '@/components/home/chapters';
 import SafeWidth from '@/components/safe-width';
 import About from '@/components/home/about';
+import { useTitle } from '@/hooks/use-title';
 
 export default function HomePage() {
+    useTitle('Beranda');
     return (
         <div className="min-h-screen space-y-8 bg-gradient-to-br from-gray-50 to-white">
             {/* Header with Quick Navigation */}

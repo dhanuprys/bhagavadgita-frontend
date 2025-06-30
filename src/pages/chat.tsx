@@ -21,8 +21,11 @@ import {
 import type { ChatMessage as ChatMessageType, ChatState } from '@/types/chat';
 import axios from 'axios';
 import { useIsMobile } from '../hooks/use-mobile';
+import { useTitle } from '@/hooks/use-title';
 
 export default function Chat() {
+    useTitle('Chat');
+
     const isMobile = useIsMobile();
     const [chatState, setChatState] = useState<ChatState>({
         messages: [],
