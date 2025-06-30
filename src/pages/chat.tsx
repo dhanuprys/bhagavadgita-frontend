@@ -198,7 +198,7 @@ export default function Chat() {
         return (
             <div className="block sm:hidden min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100/50">
                 {/* Mobile Header */}
-                <div className="bg-gradient-to-r from-slate-50 to-slate-100/80 backdrop-blur-sm border-b border-slate-200/60 sticky top-0 z-10">
+                <div className="bg-gradient-to-r from-slate-50 to-slate-100/80 backdrop-blur-sm border-b border-slate-200/60 sticky top-0 z-50">
                     <ChatHeader
                         messageCount={chatState.messages.length}
                         isMobile={true}
