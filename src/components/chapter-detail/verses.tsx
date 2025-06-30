@@ -6,7 +6,7 @@ import {
     CardHeader,
     CardTitle,
 } from '../ui/card';
-import { ArrowRight, AudioWaveformIcon } from 'lucide-react';
+import { ArrowRight, AudioLinesIcon } from 'lucide-react';
 import { Badge } from '../ui/badge';
 import { getVerses } from '@/requests/get-verses';
 
@@ -78,7 +78,7 @@ export default function Verses({ chapterNumber }: VersesProps) {
                                 </div>
                                 <div>
                                     <Badge className="bg-gradient-to-br from-purple-800 to-purple-500">
-                                        <AudioWaveformIcon />
+                                        <AudioLinesIcon />
                                         dengan audio
                                     </Badge>
                                 </div>

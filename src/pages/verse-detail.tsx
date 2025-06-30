@@ -54,11 +54,7 @@ export default function VerseDetailPage() {
                 <BreadcrumbNav
                     items={[
                         {
-                            label: `Bab ${chapter.chapter_number}`,
-                            href: `/chapter/${chapter.chapter_number}`,
-                        },
-                        {
-                            label: chapter.name,
+                            label: `Bab ${chapter.chapter_number} ${chapter.name}`,
                             href: `/chapter/${chapter.chapter_number}`,
                         },
                         { label: `Sloka ${verseDetail.verse_number}` },

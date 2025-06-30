@@ -1,4 +1,10 @@
-import { BookOpenIcon, HeartIcon, SparkleIcon, StarIcon } from 'lucide-react';
+import {
+    AudioLinesIcon,
+    BookOpenIcon,
+    HeartIcon,
+    SparkleIcon,
+    StarIcon,
+} from 'lucide-react';
 import { Badge } from '../ui/badge';
 import SafeWidth from '../safe-width';
 import { Button } from '../ui/button';
@@ -21,14 +27,20 @@ export default function Hero() {
                         </Badge>
                     </div>
 
-                    <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6 text-gray-900">
-                        Bhagavad Gita
-                    </h1>
+                    <div className="inline-flex flex-col items-end mb-6">
+                        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900">
+                            Bhagavad Gita
+                        </h1>
+                        <span className="font-semibold">
+                            untuk <span className="italic">Gen-Z</span>
+                        </span>
+                    </div>
 
-                    <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed mb-8">
-                        Dialog abadi antara Pangeran Arjuna dan Tuhan Krishna,
-                        mengeksplorasi pertanyaan terdalam tentang kewajiban,
-                        kebenaran, dan hakikat keberadaan.
+                    <p className="sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed mb-8">
+                        Mengenal lebih jauh Bhagavad Gita dengan cara yang lebih
+                        modern dan interaktif. Dilengkapi dengan chatbot yang
+                        dapat membantu anda mendalami sloka-sloka yang ada dalam
+                        kitab.
                     </p>
 
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-6 text-sm text-gray-500 mb-8">
@@ -41,8 +53,8 @@ export default function Hero() {
                             <span>700 Sloka</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <StarIcon className="w-4 h-4" />
-                            <span>Kebijaksanaan Abadi</span>
+                            <AudioLinesIcon className="w-4 h-4" />
+                            <span>Audio sloka</span>
                         </div>
                     </div>
                     <div className="max-w-xl mx-auto">

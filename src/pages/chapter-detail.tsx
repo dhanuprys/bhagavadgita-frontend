@@ -32,10 +32,9 @@ export default function ChapterDetailPage() {
                 <BreadcrumbNav
                     items={[
                         {
-                            label: `Bab ${chapter.chapter_number}`,
+                            label: `Bab ${chapter.chapter_number} ${chapter.name}`,
                             href: `/chapter/${chapter.chapter_number}`,
                         },
-                        { label: chapter.name },
                     ]}
                 />
 
