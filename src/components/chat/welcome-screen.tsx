@@ -1,9 +1,6 @@
 import { motion } from 'framer-motion';
 import { Sparkles, MessageCircle, Brain, Heart } from 'lucide-react';
 import { QuickReplies } from '@/components/quick-replies';
-import { welcomeQuickReplies } from '@/lib/mock-responses';
-import { shuffle } from 'fast-shuffle';
-import { useMemo } from 'react';
 import { getSuggestions } from '@/requests/get-suggestions';
 
 const features = [
