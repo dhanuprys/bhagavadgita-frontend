@@ -50,7 +50,7 @@ export default function VerseDetailPage() {
                 totalVerses={chapter.verses_count}
             />
 
-            <SafeWidth className="py-20 space-y-4 md:space-y-8">
+            <SafeWidth className="py-36 space-y-4 md:space-y-8">
                 <BreadcrumbNav
                     items={[
                         {

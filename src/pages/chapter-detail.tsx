@@ -28,7 +28,7 @@ export default function ChapterDetailPage() {
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
             <ReadingProgress chapterNumber={chapterNum} />
 
-            <SafeWidth className="py-20 space-y-4 md:space-y-8">
+            <SafeWidth className="py-32 space-y-4 md:space-y-8">
                 <BreadcrumbNav
                     items={[
                         {

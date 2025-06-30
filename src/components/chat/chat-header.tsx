@@ -89,12 +89,12 @@ export function ChatHeader({ messageCount, isMobile }: ChatHeaderProps) {
                         </div>
                     </div>
                 </div>
-                <div className="bg-red-100">
+                <div className="bg-purple-100">
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.5, delay: 2 }}
-                        className="text-center bg-red-600 text-white p-2 text-sm"
+                        className="text-center bg-purple-700 text-white p-2 text-sm"
                     >
                         Sumber informasi kami belum sepenuhnya memiliki
                         keakuratan tinggi.{' '}
@@ -174,7 +174,7 @@ export function ChatHeader({ messageCount, isMobile }: ChatHeaderProps) {
                 <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    transition={{ duration: 0.5, delay: 2 }}
+                    transition={{ duration: 0.5, delay: 1 }}
                     className="text-muted-foreground rounded-md p-2 text-sm"
                 >
                     Sumber informasi kami belum sepenuhnya memiliki keakuratan

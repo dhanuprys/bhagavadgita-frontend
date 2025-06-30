@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Progress } from '@/components/ui/progress';
 import SafeWidth from '../safe-width';
+import { motion } from 'motion/react';
 
 interface ReadingProgressProps {
     chapterNumber?: number;
@@ -62,6 +63,23 @@ export function ReadingProgress({
                         />
                     </div>
                 )}
+            </SafeWidth>
+            <SafeWidth>
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5, delay: 0.3 }}
+                    className="text-muted-foreground p-2 text-sm"
+                >
+                    Sumber informasi kami belum sepenuhnya memiliki keakuratan
+                    tinggi.{' '}
+                    <a
+                        href="https://forms.gle/Y8n7QVUQU33zCFaK8"
+                        className="underline font-semibold text-purple-600"
+                    >
+                        Bantu kami memperbaikinya
+                    </a>
+                </motion.div>
             </SafeWidth>
         </div>
     );

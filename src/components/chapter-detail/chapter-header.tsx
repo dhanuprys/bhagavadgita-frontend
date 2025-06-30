@@ -1,5 +1,6 @@
 import type { Chapter } from '@/types/gita';
 import { Badge } from '../ui/badge';
+import { motion } from 'motion/react';
 
 interface ChapterHeaderProps {
     chapter: Chapter;
