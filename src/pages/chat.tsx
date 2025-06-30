@@ -14,7 +14,11 @@ import { ThinkingAnimation } from '@/components/chat/thinking-animation';
 import { ErrorAlert } from '@/components/chat/error-alert';
 import { WelcomeScreen } from '@/components/chat/welcome-screen';
 import { getRandomResponse } from '@/lib/mock-responses';
-import { saveConversation, loadConversation } from '@/lib/storage';
+import {
+    saveConversation,
+    loadConversation,
+    pickCrossPagePrompt,
+} from '@/lib/storage';
 import type { ChatMessage as ChatMessageType, ChatState } from '@/types/chat';
 import axios from 'axios';
 import { useIsMobile } from '../hooks/use-mobile';
@@ -42,6 +46,18 @@ export default function Chat() {
                 conversationStarted: true,
             }));
         }
+
+        const crossPagePrompt = pickCrossPagePrompt();
+
+        if (crossPagePrompt) {
+            setChatState((prev) => ({
+                ...prev,
+                input: crossPagePrompt,
+                conversationStarted: true,
+            }));
+
+            setTimeout(() => sendChat(crossPagePrompt), 500);
+        }
     }, []);
 
     // Save conversation whenever messages change
@@ -59,91 +75,80 @@ export default function Chat() {
         scrollToBottom();
     }, [chatState.messages, chatState.isThinking, scrollToBottom]);
 
-    const simulateAIResponse = useCallback(async () => {
-        const mockResponse = getRandomResponse();
-        await new Promise((resolve) =>
-            setTimeout(resolve, mockResponse.delay || 2000)
-        );
-
-        if (Math.random() < 0.03) {
-            throw new Error(
-                'Unable to connect to BhagavadAI. Please try again.'
-            );
-        }
-
-        return mockResponse;
-    }, []);
-
     const handleSubmit = useCallback(
         async (e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
 
             if (!chatState.input.trim() || chatState.isThinking) return;
 
-            const userMessage: ChatMessageType = {
-                id: Date.now().toString(),
-                role: 'user',
-                answer_system: 'semantic',
-                content: chatState.input.trim(),
+            sendChat(chatState.input.trim());
+        },
+        [chatState.input, chatState.isThinking]
+    );
+
+    const sendChat = useCallback(async (message: string) => {
+        const userMessage: ChatMessageType = {
+            id: Date.now().toString(),
+            role: 'user',
+            answer_system: 'semantic',
+            content: message,
+            timestamp: new Date(),
+        };
+
+        setChatState((prev) => ({
+            ...prev,
+            messages: [...prev.messages, userMessage],
+            input: '',
+            isThinking: true,
+            error: null,
+            conversationStarted: true,
+        }));
+
+        try {
+            const response = await axios.post(
+                '/prompt',
+                {
+                    message,
+                },
+                {
+                    baseURL: import.meta.env.VITE_API_BASE_URL,
+                }
+            );
+
+            if (response.status !== 200) {
+                throw new Error('An error occured!');
+            }
+
+            const isNotFound =
+                response.data.answer.includes('tidak ditemukan landasan') ||
+                response.data.answer.includes('tidak sesuai konteks');
+
+            const aiMessage: ChatMessageType = {
+                id: (Date.now() + 1).toString(),
+                role: 'assistant',
+                answer_system: response.data.answer_system || 'semantic',
+                content: response.data.answer,
+                context: response.data.context,
+                quickReplies: isNotFound ? response.data.suggestions : [],
                 timestamp: new Date(),
             };
 
             setChatState((prev) => ({
                 ...prev,
-                messages: [...prev.messages, userMessage],
-                input: '',
-                isThinking: true,
-                error: null,
-                conversationStarted: true,
+                messages: [...prev.messages, aiMessage],
+                isThinking: false,
             }));
-
-            try {
-                const response = await axios.post(
-                    '/prompt',
-                    {
-                        message: chatState.input,
-                    },
-                    {
-                        baseURL: import.meta.env.VITE_API_BASE_URL,
-                    }
-                );
-
-                if (response.status !== 200) {
-                    throw new Error('An error occured!');
-                }
-
-                const isNotFound =
-                    response.data.answer.includes('tidak ditemukan landasan') ||
-                    response.data.answer.includes('tidak sesuai konteks');
-
-                const aiMessage: ChatMessageType = {
-                    id: (Date.now() + 1).toString(),
-                    role: 'assistant',
-                    answer_system: response.data.answer_system || 'semantic',
-                    content: response.data.answer,
-                    context: response.data.context,
-                    quickReplies: isNotFound ? response.data.suggestions : [],
-                    timestamp: new Date(),
-                };
-
-                setChatState((prev) => ({
-                    ...prev,
-                    messages: [...prev.messages, aiMessage],
-                    isThinking: false,
-                }));
-            } catch (error) {
-                setChatState((prev) => ({
-                    ...prev,
-                    isThinking: false,
-                    error:
-                        error instanceof Error
-                            ? error.message
-                            : 'An unexpected error occurred',
-                }));
-            }
-        },
-        [chatState.input, chatState.isThinking, simulateAIResponse]
-    );
+        } catch (error) {
+            setChatState((prev) => ({
+                ...prev,
+                isThinking: false,
+                error:
+                    error instanceof Error
+                        ? error.message
+                        : 'An unexpected error occurred',
+            }));
+        }
+    }, []);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setChatState((prev) => ({ ...prev, input: e.target.value }));
