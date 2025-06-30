@@ -19,7 +19,7 @@ export function QuickReplies({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.3 }}
-            className="flex flex-wrap gap-2 mt-3 justify-start"
+            className="flex flex-col flex-wrap sm:flex-row itesm-center gap-2 mt-3 justify-center"
         >
             {replies.slice(0, 4).map((reply, index) => (
                 <motion.div

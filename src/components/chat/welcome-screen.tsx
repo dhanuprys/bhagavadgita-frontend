@@ -49,7 +49,7 @@ export function WelcomeScreen({ onQuickReply, disabled }: WelcomeScreenProps) {
                 </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-2xl mx-auto mb-8">
+            <div className="grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-2xl mx-auto mb-8 hidden sm:grid">
                 {features.map((feature) => (
                     <div key={feature.title} className="text-center p-3 sm:p-4">
                         <div className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-2 sm:mb-3 rounded-xl sm:rounded-2xl bg-slate-50 flex items-center justify-center border border-slate-200/50">
