@@ -10,11 +10,20 @@ export interface ResponseContext {
     link: string;
 }
 
+export interface Attachment {
+    type: 'url' | 'audio';
+    title: string;
+    url: string;
+    description: string;
+    thumbnail?: string; // Preview image URL
+}
+
 export interface ChatMessage {
     id: string;
     role: 'user' | 'assistant';
     answer_system: 'intent' | 'semantic';
     content: string;
+    attachments: Attachment[];
     context?: ResponseContext[];
     quickReplies?: string[];
     timestamp: Date;

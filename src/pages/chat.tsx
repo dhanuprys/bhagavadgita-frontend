@@ -94,6 +94,7 @@ export default function Chat() {
             role: 'user',
             answer_system: 'semantic',
             content: message,
+            attachments: [],
             timestamp: new Date(),
         };
 
@@ -130,6 +131,7 @@ export default function Chat() {
                 role: 'assistant',
                 answer_system: response.data.answer_system || 'semantic',
                 content: response.data.answer,
+                attachments: response.data.attachments,
                 context: response.data.context,
                 quickReplies: isNotFound ? response.data.suggestions : [],
                 timestamp: new Date(),

@@ -17,6 +17,7 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog';
 import { NavLink } from 'react-router';
+import { AttachmentCard } from './attachment-card';
 
 interface ChatMessageProps {
     message: ChatMessageType;
@@ -45,6 +46,8 @@ const OptimizedChatMessage = memo(function ChatMessage({
             console.error('Failed to copy text:', error);
         }
     }, [message.content]);
+
+    console.log(message.attachments);
 
     return (
         <motion.div
@@ -190,6 +193,23 @@ const OptimizedChatMessage = memo(function ChatMessage({
                             {/* Message Content */}
                             <div className="leading-relaxed">
                                 <MarkdownRenderer content={message.content} />
+                            </div>
+
+                            <div className="mt-4 flex items-start flex-wrap gap-2">
+                                {message.attachments?.map(
+                                    (attachment, index) => (
+                                        <AttachmentCard
+                                            key={index}
+                                            attachment={attachment}
+                                            // compact={
+                                            //     message.attachments.length > 1
+                                            // }
+                                            // onShare={() =>
+                                            //     shareAttachment(attachment)
+                                            // }
+                                        />
+                                    )
+                                )}
                             </div>
 
                             {/* Timestamp */}
