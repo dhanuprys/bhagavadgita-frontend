@@ -7,6 +7,7 @@ import {
     Check,
     LinkIcon,
     CircleCheckIcon,
+    VerifiedIcon,
 } from 'lucide-react';
 import { useState, useCallback } from 'react';
 import { Card } from '@/components/ui/card';
@@ -113,9 +114,11 @@ const OptimizedChatMessage = memo(function ChatMessage({
                                     BhagavadAI
                                 </div>
                                 {message.answer_system === 'intent' && (
-                                    <span className="text-xs  px-2 py-1 rounded-full bg-green-600/10 text-green-600/80 flex items-center gap-x-1">
-                                        <CircleCheckIcon className="size-3" />
-                                        akurasi ditingkatkan
+                                    <span className="text-xs  px-2 py-1 rounded-full bg-purple-600/10 text-purple-600/80 flex items-center gap-x-1">
+                                        <VerifiedIcon className="size-3" />
+                                        <span className="hidden sm:block">
+                                            jawaban terverifikasi
+                                        </span>
                                     </span>
                                 )}
                             </div>
