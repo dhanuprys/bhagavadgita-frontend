@@ -4,6 +4,7 @@ import { QuickReplies } from '@/components/quick-replies';
 import { welcomeQuickReplies } from '@/lib/mock-responses';
 import { shuffle } from 'fast-shuffle';
 import { useMemo } from 'react';
+import { getSuggestions } from '@/requests/get-suggestions';
 
 const features = [
     {
@@ -29,10 +30,7 @@ interface WelcomeScreenProps {
 }
 
 export function WelcomeScreen({ onQuickReply, disabled }: WelcomeScreenProps) {
-    const shuffledQuickReplies = useMemo(
-        () => shuffle(welcomeQuickReplies).slice(0, 3),
-        []
-    );
+    const { data: suggestions } = getSuggestions();
     return (
         <motion.div
             initial={{ opacity: 0 }}
@@ -71,18 +69,20 @@ export function WelcomeScreen({ onQuickReply, disabled }: WelcomeScreenProps) {
             </div>
 
             {/* Welcome Quick Replies - Centered */}
-            <div className="text-center">
-                <p className="text-sm text-slate-500 mb-4">
-                    Coba tanyakan tentang:
-                </p>
-                <div className="flex justify-center">
-                    <QuickReplies
-                        replies={shuffledQuickReplies}
-                        onReplySelect={onQuickReply}
-                        disabled={disabled}
-                    />
+            {suggestions && (
+                <div className="text-center">
+                    <p className="text-sm text-slate-500 mb-4">
+                        Coba tanyakan tentang:
+                    </p>
+                    <div className="flex justify-center">
+                        <QuickReplies
+                            replies={suggestions}
+                            onReplySelect={onQuickReply}
+                            disabled={disabled}
+                        />
+                    </div>
                 </div>
-            </div>
+            )}
         </motion.div>
     );
 }
