@@ -523,11 +523,17 @@ export const AttachmentCard = memo(function AttachmentCard({
 
     if (attachment.type === 'url') {
         return (
-            <NavLink to={attachment.url} target="_blank">
+            <NavLink
+                className={cn(
+                    'w-full sm:w-auto sm:min-w-[300px]',
+                    compact && 'w-full sm:w-auto sm:min-w-[200px]'
+                )}
+                to={attachment.url}
+                target="_blank"
+            >
                 <Card
                     className={cn(
-                        'w-full sm:w-auto sm:min-w-[300px] !p-0 border border-gray-200 hover:border-purple-300 hover:shadow-md transition-all duration-200',
-                        compact && 'w-full sm:w-auto sm:min-w-[200px]'
+                        '!p-0 border border-gray-200 hover:border-purple-300 hover:shadow-md transition-all duration-200'
                     )}
                 >
                     <CardContent className={compact ? 'p-2' : 'p-3'}>
