@@ -1,15 +1,18 @@
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 interface QuickRepliesProps {
     replies: string[];
     onReplySelect: (reply: string) => void;
     disabled?: boolean;
+    className?: string;
 }
 
 export function QuickReplies({
     replies,
     onReplySelect,
+    className,
     disabled,
 }: QuickRepliesProps) {
     if (!replies || replies.length === 0) return null;
@@ -19,7 +22,10 @@ export function QuickReplies({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.3 }}
-            className="flex flex-col flex-wrap sm:flex-row itesm-center gap-2 mt-3 justify-center"
+            className={cn(
+                'flex flex-col flex-wrap sm:flex-row itesm-center gap-2 mt-3 justify-center',
+                className
+            )}
         >
             {replies.slice(0, 4).map((reply, index) => (
                 <motion.div

@@ -212,6 +212,7 @@ const OptimizedChatMessage = memo(function ChatMessage({
                                         <QuickReplies
                                             replies={message.quickReplies}
                                             onReplySelect={onQuickReply}
+                                            className="sm:justify-start"
                                             disabled={disabled}
                                         />
                                     </div>
