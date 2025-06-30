@@ -13,7 +13,6 @@ import { ChatHeader } from '@/components/chat/chat-header';
 import { ThinkingAnimation } from '@/components/chat/thinking-animation';
 import { ErrorAlert } from '@/components/chat/error-alert';
 import { WelcomeScreen } from '@/components/chat/welcome-screen';
-import { getRandomResponse } from '@/lib/mock-responses';
 import {
     saveConversation,
     loadConversation,

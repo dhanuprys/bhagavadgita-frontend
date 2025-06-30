@@ -1,14 +1,6 @@
 import { memo } from 'react';
 import { motion } from 'framer-motion';
-import {
-    Bot,
-    User,
-    Copy,
-    Check,
-    LinkIcon,
-    CircleCheckIcon,
-    VerifiedIcon,
-} from 'lucide-react';
+import { Bot, User, Copy, Check, LinkIcon, VerifiedIcon } from 'lucide-react';
 import { useState, useCallback } from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
