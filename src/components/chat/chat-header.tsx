@@ -1,7 +1,17 @@
-import { GlobeIcon, Sparkles } from 'lucide-react';
+import { BrushCleaningIcon, GlobeIcon, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Button } from '../ui/button';
 import { NavLink } from 'react-router';
+import { clearConversation } from '@/lib/storage';
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogTitle,
+    DialogTrigger,
+} from '../ui/dialog';
 
 interface ChatHeaderProps {
     messageCount: number;
@@ -9,6 +19,11 @@ interface ChatHeaderProps {
 }
 
 export function ChatHeader({ messageCount, isMobile }: ChatHeaderProps) {
+    const handleClearChat = () => {
+        clearConversation();
+        window.location.reload();
+    };
+
     if (isMobile) {
         return (
             <div className="p-4">
@@ -25,12 +40,42 @@ export function ChatHeader({ messageCount, isMobile }: ChatHeaderProps) {
                         <Sparkles className="w-5 h-5 text-slate-600" />
                     </motion.div>
                     <div className="flex-1">
-                        <h1 className="text-xl font-bold bg-gradient-to-r from-slate-700 to-slate-900 bg-clip-text text-transparent">
+                        <h1 className="text-lg font-bold bg-gradient-to-r from-slate-700 to-slate-900 bg-clip-text text-transparent">
                             BhagavadAI
                         </h1>
                         <p className="text-xs text-slate-500">Dedan Labs</p>
                     </div>
                     <div className="flex gap-1">
+                        <Dialog>
+                            <DialogTrigger>
+                                <Button
+                                    variant="ghost"
+                                    className="text-red-600 font-semibold hover:text-red-600 hover:bg-red-500/20"
+                                >
+                                    <BrushCleaningIcon />
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                                <DialogTitle>
+                                    Apakah anda yakin ingin membersihkan chat?
+                                </DialogTitle>
+                                <DialogDescription>
+                                    Tindakan ini tidak dapat dipulihkan!
+                                </DialogDescription>
+                                <DialogFooter>
+                                    <Button
+                                        onClick={handleClearChat}
+                                        variant="ghost"
+                                        className="text-red-600 font-semibold hover:text-red-600 hover:bg-red-500/20"
+                                    >
+                                        Ya, Hapus
+                                    </Button>
+                                    <DialogClose>
+                                        <Button variant="ghost">Batal</Button>
+                                    </DialogClose>
+                                </DialogFooter>
+                            </DialogContent>
+                        </Dialog>
                         <NavLink to="/">
                             <Button variant="outline">
                                 <GlobeIcon />
@@ -62,7 +107,38 @@ export function ChatHeader({ messageCount, isMobile }: ChatHeaderProps) {
                     )}
                 </div>
             </div>
-            <div>
+            <div className="flex gap-x-2">
+                <Dialog>
+                    <DialogTrigger>
+                        <Button
+                            variant="ghost"
+                            className="text-red-600 font-semibold hover:text-red-600 hover:bg-red-500/20"
+                        >
+                            <BrushCleaningIcon />
+                            bersihkan chat
+                        </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                        <DialogTitle>
+                            Apakah anda yakin ingin membersihkan chat?
+                        </DialogTitle>
+                        <DialogDescription>
+                            Tindakan ini tidak dapat dipulihkan!
+                        </DialogDescription>
+                        <DialogFooter>
+                            <DialogClose>
+                                <Button variant="ghost">Batal</Button>
+                            </DialogClose>
+                            <Button
+                                onClick={handleClearChat}
+                                variant="ghost"
+                                className="text-red-600 font-semibold hover:text-red-600 hover:bg-red-500/20"
+                            >
+                                Ya, Hapus
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
                 <NavLink to="/">
                     <Button variant="outline">
                         <GlobeIcon />
