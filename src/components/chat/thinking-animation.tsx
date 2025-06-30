@@ -8,7 +8,7 @@ export function ThinkingAnimation() {
     useEffect(() => {
         setTimeout(() => {
             setNeedMoreTime(true);
-        }, 2300);
+        }, 4000);
     }, []);
 
     return (
