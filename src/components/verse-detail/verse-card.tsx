@@ -4,6 +4,7 @@ import { Separator } from '../ui/separator';
 interface VerseCardProps {
     verseNumber: number;
     chapterTitle: string;
+    hindiText: string;
     sanskritText: string;
     translation: string;
 }
@@ -11,6 +12,7 @@ interface VerseCardProps {
 export default function VerseCard({
     verseNumber,
     chapterTitle,
+    hindiText,
     sanskritText,
     translation,
 }: VerseCardProps) {
@@ -27,6 +29,10 @@ export default function VerseCard({
             </CardHeader>
 
             <CardContent className="space-y-6">
+                <div>
+                    <p className="font-bold text-xl">{hindiText}</p>
+                </div>
+
                 {/* Sanskrit Text */}
                 <div>
                     <h3 className="text-xs font-semibold text-gray-500 mb-3 uppercase tracking-wide">

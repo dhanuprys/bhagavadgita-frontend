@@ -100,6 +100,7 @@ export default function VerseDetailPage() {
                 <VerseCard
                     chapterTitle={chapter.name}
                     verseNumber={verseDetail.verse_number}
+                    hindiText={verseDetail.text_hindi}
                     sanskritText={verseDetail.text_sanskrit}
                     translation={verseDetail.translations[0].content}
                 />
