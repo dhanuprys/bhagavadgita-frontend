@@ -3,7 +3,6 @@ import {
     BookOpenIcon,
     HeartIcon,
     SparkleIcon,
-    StarIcon,
 } from 'lucide-react';
 import { Badge } from '../ui/badge';
 import SafeWidth from '../safe-width';
