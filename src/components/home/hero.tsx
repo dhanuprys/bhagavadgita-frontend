@@ -106,7 +106,7 @@ function PromptInput() {
     }, [suggestions, promptInputInitialized]);
 
     return (
-        <div className="border rounded-full justify-end flex items-center px-3 py-2 gap-2">
+        <div className="border rounded-full justify-end flex items-center px-3 py-2  gap-2">
             <AnimatePresence>
                 {!isPromptHide && (
                     <motion.input
@@ -117,7 +117,7 @@ function PromptInput() {
                         transition={{ duration: 0.3 }}
                         type="text"
                         placeholder="Tanyakan sesuatu.."
-                        className="text-sm md:text-base flex-1 md:px-4 md:py-2 outline-0"
+                        className="text-sm md:text-base flex-1 md:px-4 outline-0"
                         onChange={(e) => setPrompt(e.target.value)}
                         onKeyDown={handleKeyDown}
                         value={prompt}
