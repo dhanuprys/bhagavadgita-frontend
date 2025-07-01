@@ -37,6 +37,7 @@ export default function Chat() {
 
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const chatScrollRef = useRef<HTMLDivElement>(null);
 
     // Load conversation on mount
     useEffect(() => {
@@ -73,9 +74,23 @@ export default function Chat() {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, []);
 
+    const scrollToLastUserMessage = useCallback(() => {
+        setTimeout(() => {
+            const lastUserMessage =
+                document.getElementById('last-user-message');
+            if (!lastUserMessage || !chatScrollRef.current) return;
+
+            chatScrollRef.current.scroll({
+                top: lastUserMessage.offsetTop - 10,
+                left: 0,
+                behavior: 'smooth',
+            });
+        }, 200);
+    }, []);
+
     useEffect(() => {
-        scrollToBottom();
-    }, [chatState.messages, chatState.isThinking, scrollToBottom]);
+        scrollToLastUserMessage();
+    }, [chatState.messages, chatState.isThinking, scrollToLastUserMessage]);
 
     const handleSubmit = useCallback(
         async (e: React.FormEvent<HTMLFormElement>) => {
@@ -208,7 +223,10 @@ export default function Chat() {
                 {/* Mobile Chat Container */}
                 <div className="flex flex-col h-[calc(100vh-80px)]">
                     {/* Mobile Messages Area */}
-                    <div className="flex-1 overflow-y-auto bg-white">
+                    <div
+                        ref={chatScrollRef}
+                        className="relative flex-1 overflow-y-auto bg-white"
+                    >
                         {/* Error Alert */}
                         {chatState.error && (
                             <div className="p-4 pb-0">
@@ -239,6 +257,14 @@ export default function Chat() {
                                         index={index}
                                         onQuickReply={handleQuickReply}
                                         disabled={chatState.isThinking}
+                                        isLastUser={
+                                            (chatState.messages.length - 1 ===
+                                                index ||
+                                                chatState.messages.length -
+                                                    2 ===
+                                                    index) &&
+                                            message.role === 'user'
+                                        }
                                     />
                                 ))}
 
@@ -299,14 +325,17 @@ export default function Chat() {
         <div className="hidden sm:block min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100/50">
             <div className="container mx-auto px-4 py-6 max-w-5xl">
                 {/* Chat Container */}
-                <Card className="shadow-2xl border-0 !py-0 bg-white/80 backdrop-blur-sm overflow-hidden">
+                <Card className="shadow-2xl gap-y-0 border-0 !py-0 bg-white/80 backdrop-blur-sm overflow-hidden">
                     <div className="border-b bg-gradient-to-r from-slate-50 to-slate-100/80 backdrop-blur-sm p-4">
                         <ChatHeader messageCount={chatState.messages.length} />
                     </div>
 
                     <CardContent className="p-0">
                         {/* Messages Area */}
-                        <div className="h-[60vh] overflow-y-auto bg-white">
+                        <div
+                            ref={chatScrollRef}
+                            className="h-[60vh] overflow-y-auto bg-white"
+                        >
                             {/* Error Alert - Inside messages area */}
                             {chatState.error && (
                                 <div className="p-6 pb-0">
@@ -338,6 +367,16 @@ export default function Chat() {
                                                 index={index}
                                                 onQuickReply={handleQuickReply}
                                                 disabled={chatState.isThinking}
+                                                isLastUser={
+                                                    (chatState.messages.length -
+                                                        1 ===
+                                                        index ||
+                                                        chatState.messages
+                                                            .length -
+                                                            2 ===
+                                                            index) &&
+                                                    message.role === 'user'
+                                                }
                                             />
                                         )
                                     )}
