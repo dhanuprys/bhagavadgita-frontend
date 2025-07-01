@@ -93,7 +93,7 @@ export function ChatHeader({ messageCount, isMobile }: ChatHeaderProps) {
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        transition={{ duration: 0.5, delay: 2 }}
+                        transition={{ duration: 0.5, delay: 1 }}
                         className="text-center bg-purple-700 text-white p-2 text-sm"
                     >
                         Sumber informasi kami belum sepenuhnya memiliki
