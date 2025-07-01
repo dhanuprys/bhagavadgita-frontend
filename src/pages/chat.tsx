@@ -273,7 +273,7 @@ export default function Chat() {
                     <div ref={messagesEndRef} />
                     {!chatState.isThinking && <div className="h-[50vh]"></div>}
                 </div>
-                <div className="border-t bg-slate-50/95 backdrop-blur-sm p-4 space-y-2">
+                <div className="fixed bottom-0 w-full border-t bg-slate-50/95 backdrop-blur-sm p-4 space-y-2">
                     <form
                         onSubmit={handleSubmit}
                         className="flex gap-3 items-end"
