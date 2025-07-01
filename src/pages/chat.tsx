@@ -39,10 +39,16 @@ export default function Chat() {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const chatScrollRef = useRef<HTMLDivElement>(null);
 
-    // Load conversation on mount
     useEffect(() => {
         document.body.style.overflow = 'hidden';
 
+        return () => {
+            document.body.style.overflow = 'auto';
+        };
+    });
+
+    // Load conversation on mount
+    useEffect(() => {
         const savedMessages = loadConversation();
         if (savedMessages.length > 0) {
             setChatState((prev) => ({
