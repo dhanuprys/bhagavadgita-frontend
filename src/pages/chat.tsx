@@ -211,7 +211,7 @@ export default function Chat() {
 
     if (isMobile) {
         return (
-            <div className="min-h-screen flex flex-col max-h-screen">
+            <div className="min-h-screen flex flex-col overflow-hidden max-h-screen">
                 <div className="bg-gradient-to-r from-slate-50 to-slate-100/80 backdrop-blur-sm border-b border-slate-200/60">
                     <ChatHeader
                         messageCount={chatState.messages.length}
