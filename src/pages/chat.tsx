@@ -211,110 +211,102 @@ export default function Chat() {
 
     if (isMobile) {
         return (
-            <div className="block sm:hidden min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100/50">
-                {/* Mobile Header */}
-                <div className="bg-gradient-to-r from-slate-50 to-slate-100/80 backdrop-blur-sm border-b border-slate-200/60 sticky top-0 z-50">
+            <div className="min-h-screen flex flex-col max-h-screen">
+                <div className="bg-gradient-to-r from-slate-50 to-slate-100/80 backdrop-blur-sm border-b border-slate-200/60">
                     <ChatHeader
                         messageCount={chatState.messages.length}
                         isMobile={true}
                     />
                 </div>
+                <div
+                    ref={chatScrollRef}
+                    className="relative flex-auto max-h-full overflow-y-auto"
+                >
+                    {/* Error Alert */}
+                    {chatState.error && (
+                        <div className="p-4 pb-0">
+                            <ErrorAlert
+                                error={chatState.error}
+                                onDismiss={dismissError}
+                            />
+                        </div>
+                    )}
 
-                {/* Mobile Chat Container */}
-                <div className="flex flex-col h-[calc(100vh-80px)]">
-                    {/* Mobile Messages Area */}
-                    <div
-                        ref={chatScrollRef}
-                        className="relative flex-1 overflow-y-auto bg-white"
-                    >
-                        {/* Error Alert */}
-                        {chatState.error && (
-                            <div className="p-4 pb-0">
-                                <ErrorAlert
-                                    error={chatState.error}
-                                    onDismiss={dismissError}
-                                />
-                            </div>
-                        )}
+                    {/* Welcome Screen */}
+                    {!chatState.conversationStarted && (
+                        <div className="p-4">
+                            <WelcomeScreen
+                                onQuickReply={handleQuickReply}
+                                disabled={chatState.isThinking}
+                            />
+                        </div>
+                    )}
 
-                        {/* Welcome Screen */}
-                        {!chatState.conversationStarted && (
-                            <div className="p-4">
-                                <WelcomeScreen
+                    {/* Messages */}
+                    <div className="pt-2">
+                        <AnimatePresence mode="popLayout">
+                            {chatState.messages.map((message, index) => (
+                                <ChatMessage
+                                    key={message.id}
+                                    message={message}
+                                    index={index}
                                     onQuickReply={handleQuickReply}
                                     disabled={chatState.isThinking}
+                                    isLastUser={
+                                        (chatState.messages.length - 1 ===
+                                            index ||
+                                            chatState.messages.length - 2 ===
+                                                index) &&
+                                        message.role === 'user'
+                                    }
                                 />
-                            </div>
-                        )}
+                            ))}
 
-                        {/* Messages */}
-                        <div className="pt-2">
-                            <AnimatePresence mode="popLayout">
-                                {chatState.messages.map((message, index) => (
-                                    <ChatMessage
-                                        key={message.id}
-                                        message={message}
-                                        index={index}
-                                        onQuickReply={handleQuickReply}
-                                        disabled={chatState.isThinking}
-                                        isLastUser={
-                                            (chatState.messages.length - 1 ===
-                                                index ||
-                                                chatState.messages.length -
-                                                    2 ===
-                                                    index) &&
-                                            message.role === 'user'
-                                        }
-                                    />
-                                ))}
-
-                                {chatState.isThinking && (
-                                    <motion.div key="thinking">
-                                        <ThinkingAnimation />
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                        </div>
-
-                        <div ref={messagesEndRef} />
+                            {chatState.isThinking && (
+                                <motion.div key="thinking">
+                                    <ThinkingAnimation />
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
                     </div>
 
-                    {/* Mobile Input Area */}
-                    <div className="border-t bg-slate-50/95 backdrop-blur-sm p-4 sticky bottom-0 space-y-2">
-                        <form
-                            onSubmit={handleSubmit}
-                            className="flex gap-3 items-end"
-                        >
-                            <div className="flex-1">
-                                <Textarea
-                                    ref={textareaRef}
-                                    value={chatState.input}
-                                    onChange={handleInputChange}
-                                    onKeyDown={handleKeyDown}
-                                    placeholder="Tanyakan bhagavad gita..."
-                                    className="min-h-[44px] max-h-[100px] resize-none border-slate-200/60 focus:border-slate-300 focus:ring-slate-200/50 bg-white/95 backdrop-blur-sm text-slate-700 placeholder:text-slate-400 text-sm rounded-2xl"
-                                    disabled={chatState.isThinking}
-                                />
-                            </div>
-                            <motion.div
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                            >
-                                <Button
-                                    type="submit"
-                                    disabled={
-                                        !chatState.input.trim() ||
-                                        chatState.isThinking
-                                    }
-                                    className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-slate-700 hover:to-slate-800 text-white border-0 w-11 h-11 rounded-full shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center"
-                                >
-                                    <Send className="w-4 h-4" />
-                                </Button>
-                            </motion.div>
-                        </form>
-                        <div className="text-center text-xs text-gray-400">
-                            *AI bisa saja membuat kesalahan informasi.
+                    <div ref={messagesEndRef} />
+                    {!chatState.isThinking && <div className="h-[50vh]"></div>}
+                </div>
+                <div className="border-t bg-slate-50/95 backdrop-blur-sm p-4 space-y-2">
+                    <form
+                        onSubmit={handleSubmit}
+                        className="flex gap-3 items-end"
+                    >
+                        <div className="flex-1">
+                            <Textarea
+                                ref={textareaRef}
+                                value={chatState.input}
+                                onChange={handleInputChange}
+                                onKeyDown={handleKeyDown}
+                                placeholder="Tanyakan bhagavad gita..."
+                                className="min-h-[44px] max-h-[100px] resize-none border-slate-200/60 focus:border-slate-300 focus:ring-slate-200/50 bg-white/95 backdrop-blur-sm text-slate-700 placeholder:text-slate-400 text-sm rounded-2xl"
+                                disabled={chatState.isThinking}
+                            />
                         </div>
+                        <motion.div
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                        >
+                            <Button
+                                type="submit"
+                                disabled={
+                                    !chatState.input.trim() ||
+                                    chatState.isThinking
+                                }
+                                className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-slate-700 hover:to-slate-800 text-white border-0 w-11 h-11 rounded-full shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center"
+                            >
+                                <Send className="w-4 h-4" />
+                            </Button>
+                        </motion.div>
+                    </form>
+                    <div className="text-center text-xs text-gray-400">
+                        *AI bisa saja membuat kesalahan informasi.
                     </div>
                 </div>
             </div>
