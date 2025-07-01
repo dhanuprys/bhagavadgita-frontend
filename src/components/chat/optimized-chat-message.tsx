@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { Bot, User, Copy, Check, LinkIcon, VerifiedIcon } from 'lucide-react';
 import { useState, useCallback } from 'react';
@@ -29,10 +29,7 @@ interface ChatMessageProps {
 }
 
 const OptimizedChatMessage = React.forwardRef<HTMLDivElement, ChatMessageProps>(
-    (
-        { message, index, onQuickReply, disabled, isHighlighted, isLastUser },
-        ref
-    ) => {
+    ({ message, index, onQuickReply, disabled, isHighlighted, isLastUser }) => {
         const [copied, setCopied] = useState(false);
         const isUser = message.role === 'user';
 

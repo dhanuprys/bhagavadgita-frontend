@@ -70,9 +70,9 @@ export default function Chat() {
         }
     }, [chatState.messages]);
 
-    const scrollToBottom = useCallback(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, []);
+    // const scrollToBottom = useCallback(() => {
+    //     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    // }, []);
 
     const scrollToLastUserMessage = useCallback(() => {
         setTimeout(() => {
