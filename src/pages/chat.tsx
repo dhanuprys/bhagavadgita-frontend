@@ -306,7 +306,7 @@ export default function Chat() {
                                         !chatState.input.trim() ||
                                         chatState.isThinking
                                     }
-                                    className="bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800 text-white border-0 w-11 h-11 rounded-full shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center"
+                                    className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-slate-700 hover:to-slate-800 text-white border-0 w-11 h-11 rounded-full shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center"
                                 >
                                     <Send className="w-4 h-4" />
                                 </Button>
@@ -419,7 +419,7 @@ export default function Chat() {
                                             !chatState.input.trim() ||
                                             chatState.isThinking
                                         }
-                                        className="self-end bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800 text-white border-0 px-6 py-3 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                                        className="self-end bg-gradient-to-r from-purple-600 to-purple-700 hover:from-slate-700 hover:to-slate-800 text-white border-0 px-6 py-3 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                                     >
                                         <Send className="w-4 h-4" />
                                     </Button>
