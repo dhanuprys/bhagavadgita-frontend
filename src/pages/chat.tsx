@@ -127,6 +127,7 @@ export default function Chat() {
             const chatScrollHeight = chatScrollRef.current.offsetHeight;
             const focusElementHeight =
                 lastUserMessageHeight + lastAssistantMessageHeight;
+
             const calculatedHeight = chatScrollHeight - focusElementHeight - 40;
 
             setBottomSpaceHeight(calculatedHeight);
@@ -320,6 +321,7 @@ export default function Chat() {
                     {!chatState.isThinking && (
                         <div style={{ height: `${bottomSpaceHeight}px` }}></div>
                     )}
+                    <div className="h-[70px]"></div>
                 </div>
                 <div className="fixed bottom-0 w-full border-t bg-slate-50/95 backdrop-blur-sm p-4 space-y-2">
                     <form

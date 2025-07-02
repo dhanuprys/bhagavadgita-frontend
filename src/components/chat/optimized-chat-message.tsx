@@ -1,6 +1,15 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Bot, User, Copy, Check, LinkIcon, VerifiedIcon } from 'lucide-react';
+import {
+    Bot,
+    User,
+    Copy,
+    Check,
+    LinkIcon,
+    VerifiedIcon,
+    PlayIcon,
+    PauseIcon,
+} from 'lucide-react';
 import { useState, useCallback } from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -18,6 +27,7 @@ import {
 } from '@/components/ui/dialog';
 import { NavLink } from 'react-router';
 import { AttachmentCard } from './attachment-card';
+import { useSpeech } from 'react-text-to-speech';
 
 interface ChatMessageProps {
     message: ChatMessageType;
@@ -39,6 +49,14 @@ const OptimizedChatMessage = React.forwardRef<HTMLDivElement, ChatMessageProps>(
         isLastUser,
         isLastAssistant,
     }) => {
+        const {
+            start: startSound,
+            stop: stopSound,
+            speechStatus,
+        } = useSpeech({
+            text: message.content,
+            lang: 'id-ID',
+        });
         const [copied, setCopied] = useState(false);
         const isUser = message.role === 'user';
         const elementId = isLastUser
@@ -129,22 +147,6 @@ const OptimizedChatMessage = React.forwardRef<HTMLDivElement, ChatMessageProps>(
                                         </span>
                                     )}
                                 </div>
-
-                                {/* Copy Button */}
-                                <div className="ml-auto opacity-0 group-hover/message:opacity-100 transition-opacity duration-200">
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={handleCopy}
-                                        className="h-6 w-6 p-0 hover:bg-purple-100"
-                                    >
-                                        {copied ? (
-                                            <Check className="w-3 h-3 text-green-600" />
-                                        ) : (
-                                            <Copy className="w-3 h-3 text-purple-500" />
-                                        )}
-                                    </Button>
-                                </div>
                             </div>
 
                             {/* Content Area - Below the avatar */}
@@ -230,6 +232,52 @@ const OptimizedChatMessage = React.forwardRef<HTMLDivElement, ChatMessageProps>(
                                         )
                                     )}
                                 </div>
+
+                                {!message.quickReplies ||
+                                    (message.quickReplies.length < 1 && (
+                                        <div className="mt-2 flex gap-x-2">
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={
+                                                    speechStatus === 'started'
+                                                        ? stopSound
+                                                        : startSound
+                                                }
+                                                className="hover:bg-purple-100"
+                                            >
+                                                {speechStatus === 'started' ? (
+                                                    <>
+                                                        <PauseIcon className="w-3 h-3 text-purple-500" />{' '}
+                                                        Stop
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <PlayIcon className="w-3 h-3 text-purple-500" />{' '}
+                                                        Bacakan
+                                                    </>
+                                                )}
+                                            </Button>
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={handleCopy}
+                                                className="hover:bg-purple-100"
+                                            >
+                                                {copied ? (
+                                                    <>
+                                                        <Check className="w-3 h-3 text-green-600" />{' '}
+                                                        Berhasil disalin
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <Copy className="w-3 h-3 text-purple-500" />{' '}
+                                                        Salin
+                                                    </>
+                                                )}
+                                            </Button>
+                                        </div>
+                                    ))}
 
                                 {/* Timestamp */}
                                 <div className="mt-4 text-xs text-grey-400">
