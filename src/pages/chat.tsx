@@ -34,6 +34,7 @@ export default function Chat() {
         input: '',
         conversationStarted: false,
     });
+    const [bottomSpaceHeight, setBottomSpaceHeight] = useState(0);
 
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -99,6 +100,38 @@ export default function Chat() {
     useEffect(() => {
         scrollToLastUserMessage();
     }, [chatState.messages, chatState.isThinking, scrollToLastUserMessage]);
+
+    useEffect(() => {
+        if (chatState.isThinking) return;
+
+        setTimeout(() => {
+            const lastUserMessage =
+                document.getElementById('last-user-message');
+            const lastAssistantMessage = document.getElementById(
+                'last-assistant-message'
+            );
+
+            if (!chatScrollRef.current) return;
+
+            let lastUserMessageHeight = 0;
+            let lastAssistantMessageHeight = 0;
+
+            if (lastUserMessage) {
+                lastUserMessageHeight = lastUserMessage.clientHeight;
+            }
+
+            if (lastAssistantMessage) {
+                lastAssistantMessageHeight = lastAssistantMessage.clientHeight;
+            }
+
+            const chatScrollHeight = chatScrollRef.current.offsetHeight;
+            const focusElementHeight =
+                lastUserMessageHeight + lastAssistantMessageHeight;
+            const calculatedHeight = chatScrollHeight - focusElementHeight - 40;
+
+            setBottomSpaceHeight(calculatedHeight);
+        }, 200);
+    }, [chatState.isThinking]);
 
     const handleSubmit = useCallback(
         async (e: React.FormEvent<HTMLFormElement>) => {
@@ -267,6 +300,11 @@ export default function Chat() {
                                                 index) &&
                                         message.role === 'user'
                                     }
+                                    isLastAssistant={
+                                        chatState.messages.length - 1 ===
+                                            index &&
+                                        message.role === 'assistant'
+                                    }
                                 />
                             ))}
 
@@ -279,7 +317,9 @@ export default function Chat() {
                     </div>
 
                     <div ref={messagesEndRef} />
-                    {!chatState.isThinking && <div className="h-[50vh]"></div>}
+                    {!chatState.isThinking && (
+                        <div style={{ height: `${bottomSpaceHeight}px` }}></div>
+                    )}
                 </div>
                 <div className="fixed bottom-0 w-full border-t bg-slate-50/95 backdrop-blur-sm p-4 space-y-2">
                     <form
@@ -376,6 +416,12 @@ export default function Chat() {
                                                             2 ===
                                                             index) &&
                                                     message.role === 'user'
+                                                }
+                                                isLastAssistant={
+                                                    chatState.messages.length -
+                                                        1 ===
+                                                        index &&
+                                                    message.role === 'assistant'
                                                 }
                                             />
                                         )

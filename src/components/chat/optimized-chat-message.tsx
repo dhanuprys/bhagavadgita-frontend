@@ -26,12 +26,26 @@ interface ChatMessageProps {
     disabled?: boolean;
     isHighlighted?: boolean;
     isLastUser: boolean;
+    isLastAssistant: boolean;
 }
 
 const OptimizedChatMessage = React.forwardRef<HTMLDivElement, ChatMessageProps>(
-    ({ message, index, onQuickReply, disabled, isHighlighted, isLastUser }) => {
+    ({
+        message,
+        index,
+        onQuickReply,
+        disabled,
+        isHighlighted,
+        isLastUser,
+        isLastAssistant,
+    }) => {
         const [copied, setCopied] = useState(false);
         const isUser = message.role === 'user';
+        const elementId = isLastUser
+            ? 'last-user-message'
+            : isLastAssistant
+            ? 'last-assistant-message'
+            : undefined;
 
         const handleCopy = useCallback(async () => {
             try {
@@ -55,7 +69,7 @@ const OptimizedChatMessage = React.forwardRef<HTMLDivElement, ChatMessageProps>(
                 className={`w-full mb-6 sm:mb-8 ${
                     isHighlighted ? 'bg-yellow-50/50 rounded-lg p-2 -m-2' : ''
                 }`}
-                id={isLastUser ? 'last-user-message' : undefined}
+                id={elementId}
             >
                 {isUser ? (
                     // User Message - Keep card design, right-aligned
