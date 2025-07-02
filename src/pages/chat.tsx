@@ -2,7 +2,7 @@
 
 import type React from 'react';
 
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
@@ -22,6 +22,7 @@ import type { ChatMessage as ChatMessageType, ChatState } from '@/types/chat';
 import axios from 'axios';
 import { useIsMobile } from '../hooks/use-mobile';
 import { useTitle } from '@/hooks/use-title';
+import { useSpeak, useSpeech, useVoices } from 'react-text-to-speech';
 
 export default function Chat() {
     useTitle('Chat');
@@ -35,6 +36,13 @@ export default function Chat() {
         conversationStarted: false,
     });
     const [bottomSpaceHeight, setBottomSpaceHeight] = useState(0);
+    const { voices } = useVoices();
+    const voiceURI = useMemo(
+        () =>
+            voices.find((v) => v.name === 'Google Bahasa Indonesia')?.voiceURI,
+        [voices]
+    );
+    const voiceLangId = 'id-ID';
 
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -294,6 +302,8 @@ export default function Chat() {
                                     index={index}
                                     onQuickReply={handleQuickReply}
                                     disabled={chatState.isThinking}
+                                    voiceURI={voiceURI}
+                                    voiceLangId={voiceLangId}
                                     isLastUser={
                                         (chatState.messages.length - 1 ===
                                             index ||
@@ -409,6 +419,8 @@ export default function Chat() {
                                                 index={index}
                                                 onQuickReply={handleQuickReply}
                                                 disabled={chatState.isThinking}
+                                                voiceURI={voiceURI}
+                                                voiceLangId={voiceLangId}
                                                 isLastUser={
                                                     (chatState.messages.length -
                                                         1 ===
