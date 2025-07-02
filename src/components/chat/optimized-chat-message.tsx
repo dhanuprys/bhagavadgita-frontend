@@ -7,8 +7,8 @@ import {
     Check,
     LinkIcon,
     VerifiedIcon,
-    PlayIcon,
     PauseIcon,
+    Volume2Icon,
 } from 'lucide-react';
 import { useState, useCallback } from 'react';
 import { Card } from '@/components/ui/card';
@@ -259,7 +259,7 @@ const OptimizedChatMessage = React.forwardRef<HTMLDivElement, ChatMessageProps>(
                                                     </>
                                                 ) : (
                                                     <>
-                                                        <PlayIcon className="w-3 h-3 text-purple-500" />{' '}
+                                                        <Volume2Icon className="w-3 h-3 text-purple-500" />{' '}
                                                         Bacakan
                                                     </>
                                                 )}
