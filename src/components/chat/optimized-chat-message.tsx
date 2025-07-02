@@ -37,7 +37,7 @@ interface ChatMessageProps {
     isHighlighted?: boolean;
     isLastUser: boolean;
     isLastAssistant: boolean;
-    voiceURI?: SpeechSynthesisVoice;
+    voiceURI?: string;
     voiceLangId?: string;
 }
 
@@ -61,7 +61,7 @@ const OptimizedChatMessage = React.forwardRef<HTMLDivElement, ChatMessageProps>(
             text: message.content,
             highlightMode: 'sentence',
             lang: voiceLangId,
-            voiceURI: voiceURI,
+            voiceURI: voiceURI || undefined,
         });
         const [copied, setCopied] = useState(false);
         const isUser = message.role === 'user';

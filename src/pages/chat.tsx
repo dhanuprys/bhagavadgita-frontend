@@ -22,7 +22,7 @@ import type { ChatMessage as ChatMessageType, ChatState } from '@/types/chat';
 import axios from 'axios';
 import { useIsMobile } from '../hooks/use-mobile';
 import { useTitle } from '@/hooks/use-title';
-import { useSpeak, useSpeech, useVoices } from 'react-text-to-speech';
+import { useVoices } from 'react-text-to-speech';
 
 export default function Chat() {
     useTitle('Chat');
