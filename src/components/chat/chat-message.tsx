@@ -40,6 +40,7 @@ interface ChatMessageProps {
     isLastAssistant: boolean;
     stream: boolean;
     onStreamEnd: () => void;
+    onRequestScrollToBottom: () => void;
 }
 
 function formatTimestamp(date: Date) {
@@ -177,6 +178,7 @@ function AIMessage({
     copied,
     stream,
     onStreamEnd,
+    onRequestScrollToBottom,
 }: {
     message: ChatMessageType;
     onQuickReply: (reply: string) => void;
@@ -188,6 +190,7 @@ function AIMessage({
     copied: boolean;
     stream: boolean;
     onStreamEnd: () => void;
+    onRequestScrollToBottom: () => void;
 }) {
     const [isStreaming, setIsStreaming] = useState(stream);
     const [contentChunk, setContentChunk] = useState(
@@ -203,11 +206,13 @@ function AIMessage({
                     // basis
                     onStreamEnd();
                     setIsStreaming(false);
+                    onRequestScrollToBottom();
                     return;
                 }
 
                 content += message[0];
                 setContentChunk(() => content);
+                onRequestScrollToBottom();
                 setTimeout(() => {
                     extendChunk(message.slice(1));
                 }, delay);
@@ -314,6 +319,7 @@ const ChatMessage = React.forwardRef<HTMLDivElement, ChatMessageProps>(
             isLastAssistant,
             stream,
             onStreamEnd,
+            onRequestScrollToBottom,
         },
         ref
     ) => {
@@ -374,6 +380,7 @@ const ChatMessage = React.forwardRef<HTMLDivElement, ChatMessageProps>(
                         copied={copied}
                         stream={isStreaming}
                         onStreamEnd={onStreamEnd}
+                        onRequestScrollToBottom={onRequestScrollToBottom}
                     />
                 )}
             </motion.div>

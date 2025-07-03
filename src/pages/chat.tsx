@@ -80,9 +80,9 @@ export default function Chat() {
         }
     }, [chatState.messages]);
 
-    // const scrollToBottom = useCallback(() => {
-    //     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    // }, []);
+    const scrollToBottom = useCallback(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, []);
 
     const scrollToLastUserMessage = useCallback(() => {
         setTimeout(() => {
@@ -138,7 +138,7 @@ export default function Chat() {
 
             setBottomSpaceHeight(calculatedHeight);
         }, 200);
-    }, [chatState.isThinking]);
+    }, [chatState.isThinking, chatState.isStreaming]);
 
     const handleSubmit = useCallback(
         async (e: React.FormEvent<HTMLFormElement>) => {
@@ -337,6 +337,9 @@ export default function Chat() {
                                                 isStreaming: false,
                                             }))
                                         }
+                                        onRequestScrollToBottom={() =>
+                                            scrollToBottom
+                                        }
                                     />
                                 );
                             })}
@@ -477,6 +480,9 @@ export default function Chat() {
                                                                     false,
                                                             })
                                                         )
+                                                    }
+                                                    onRequestScrollToBottom={
+                                                        scrollToBottom
                                                     }
                                                 />
                                             );

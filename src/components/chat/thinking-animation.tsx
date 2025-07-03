@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { Bot } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
@@ -97,7 +98,10 @@ export const ThinkingAnimation = React.forwardRef<HTMLDivElement>(
                                     style={{
                                         animationDelay: `${num * 0.1}s`,
                                     }}
-                                    className="w-full ease-in-out rounded-md bg-gradient-to-r animate-pulse from-gray-600/20 to-gray-400/20 h-[25px]"
+                                    className={cn(
+                                        num === 4 ? 'w-3/4' : 'w-full',
+                                        'ease-in-out rounded-md bg-gradient-to-r animate-pulse from-gray-600/20 to-gray-400/20 h-[25px]'
+                                    )}
                                 ></div>
                             </motion.div>
                         ))}
