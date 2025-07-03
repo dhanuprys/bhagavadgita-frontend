@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import {
     Bot,
@@ -28,6 +28,7 @@ import {
 import { NavLink } from 'react-router';
 import { AttachmentCard } from './attachment-card';
 import { useSpeech } from 'react-text-to-speech';
+import { cn } from '@/lib/utils';
 
 interface ChatMessageProps {
     message: ChatMessageType;
@@ -37,6 +38,8 @@ interface ChatMessageProps {
     isHighlighted?: boolean;
     isLastUser: boolean;
     isLastAssistant: boolean;
+    stream: boolean;
+    onStreamEnd: () => void;
 }
 
 function formatTimestamp(date: Date) {
@@ -172,6 +175,8 @@ function AIMessage({
     stopSound,
     handleCopy,
     copied,
+    stream,
+    onStreamEnd,
 }: {
     message: ChatMessageType;
     onQuickReply: (reply: string) => void;
@@ -181,7 +186,39 @@ function AIMessage({
     stopSound: () => void;
     handleCopy: () => void;
     copied: boolean;
+    stream: boolean;
+    onStreamEnd: () => void;
 }) {
+    const [isStreaming, setIsStreaming] = useState(stream);
+    const [contentChunk, setContentChunk] = useState(
+        stream ? '' : message.content
+    );
+
+    useEffect(() => {
+        if (stream) {
+            let content = '';
+            const delay = message.content.length > 100 ? 50 : 70;
+            const extendChunk = (message: string) => {
+                if (message.length <= 0) {
+                    // basis
+                    onStreamEnd();
+                    setIsStreaming(false);
+                    return;
+                }
+
+                content += message[0];
+                setContentChunk(() => content);
+                setTimeout(() => {
+                    extendChunk(message.slice(1));
+                }, delay);
+            };
+
+            extendChunk(message.content);
+        } else {
+            onStreamEnd();
+        }
+    }, []);
+
     return (
         <div className="w-full py-2 px-4 sm:px-6 group/message">
             <div className="max-w-4xl mx-auto">
@@ -209,27 +246,39 @@ function AIMessage({
                 {/* Content Area */}
                 <div className="ml-0 sm:ml-2">
                     <ContextTags context={message.context} />
-                    <div className="leading-relaxed">
-                        <MarkdownRenderer content={message.content} />
+                    <div
+                        className={cn(
+                            'leading-relaxed',
+                            isStreaming && 'opacity-90'
+                        )}
+                    >
+                        <MarkdownRenderer content={contentChunk} />
                     </div>
-                    <div className="mt-4 flex items-start flex-wrap gap-2">
-                        {message.attachments?.map((attachment, index) => (
-                            <AttachmentCard
-                                key={index}
-                                attachment={attachment}
-                            />
-                        ))}
-                    </div>
-                    {(!message.quickReplies ||
-                        message.quickReplies.length < 1) && (
-                        <ActionButtons
-                            speechStatus={speechStatus}
-                            startSound={startSound}
-                            stopSound={stopSound}
-                            handleCopy={handleCopy}
-                            copied={copied}
-                        />
+                    {!isStreaming && (
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            className="mt-4 flex items-start flex-wrap gap-2"
+                        >
+                            {message.attachments?.map((attachment, index) => (
+                                <AttachmentCard
+                                    key={index}
+                                    attachment={attachment}
+                                />
+                            ))}
+                        </motion.div>
                     )}
+                    {!isStreaming &&
+                        (!message.quickReplies ||
+                            message.quickReplies.length < 1) && (
+                            <ActionButtons
+                                speechStatus={speechStatus}
+                                startSound={startSound}
+                                stopSound={stopSound}
+                                handleCopy={handleCopy}
+                                copied={copied}
+                            />
+                        )}
                     <div className="mt-4 text-xs text-grey-400">
                         <span>{formatTimestamp(message.timestamp)}</span>
                     </div>
@@ -263,6 +312,8 @@ const ChatMessage = React.forwardRef<HTMLDivElement, ChatMessageProps>(
             isHighlighted,
             isLastUser,
             isLastAssistant,
+            stream,
+            onStreamEnd,
         },
         ref
     ) => {
@@ -275,6 +326,7 @@ const ChatMessage = React.forwardRef<HTMLDivElement, ChatMessageProps>(
             lang: 'id-ID',
             voiceURI: 'Google Bahasa Indonesia',
         });
+        const isStreaming = useMemo(() => stream, []);
         const [copied, setCopied] = useState(false);
         const isUser = message.role === 'user';
         const elementId = isLastUser
@@ -320,6 +372,8 @@ const ChatMessage = React.forwardRef<HTMLDivElement, ChatMessageProps>(
                         stopSound={stopSound}
                         handleCopy={handleCopy}
                         copied={copied}
+                        stream={isStreaming}
+                        onStreamEnd={onStreamEnd}
                     />
                 )}
             </motion.div>

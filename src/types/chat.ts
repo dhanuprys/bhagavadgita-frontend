@@ -33,6 +33,7 @@ export interface ChatMessage {
 export interface ChatState {
     messages: ChatMessage[];
     isThinking: boolean;
+    isStreaming: boolean;
     error: string | null;
     input: string;
     conversationStarted: boolean;

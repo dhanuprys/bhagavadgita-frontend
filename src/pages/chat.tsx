@@ -2,7 +2,7 @@
 
 import type React from 'react';
 
-import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
@@ -22,7 +22,6 @@ import type { ChatMessage as ChatMessageType, ChatState } from '@/types/chat';
 import axios from 'axios';
 import { useIsMobile } from '../hooks/use-mobile';
 import { useTitle } from '@/hooks/use-title';
-import { useVoices } from 'react-text-to-speech';
 
 export default function Chat() {
     useTitle('Chat');
@@ -31,6 +30,7 @@ export default function Chat() {
     const [chatState, setChatState] = useState<ChatState>({
         messages: [],
         isThinking: false,
+        isStreaming: false,
         error: null,
         input: '',
         conversationStarted: false,
@@ -100,7 +100,12 @@ export default function Chat() {
 
     useEffect(() => {
         scrollToLastUserMessage();
-    }, [chatState.messages, chatState.isThinking, scrollToLastUserMessage]);
+    }, [
+        chatState.messages,
+        chatState.isThinking,
+        chatState.isStreaming,
+        scrollToLastUserMessage,
+    ]);
 
     useEffect(() => {
         if (chatState.isThinking) return;
@@ -139,11 +144,16 @@ export default function Chat() {
         async (e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
 
-            if (!chatState.input.trim() || chatState.isThinking) return;
+            if (
+                !chatState.input.trim() ||
+                chatState.isThinking ||
+                chatState.isStreaming
+            )
+                return;
 
             sendChat(chatState.input.trim());
         },
-        [chatState.input, chatState.isThinking]
+        [chatState.input, chatState.isThinking, chatState.isStreaming]
     );
 
     const sendChat = useCallback(async (message: string) => {
@@ -199,6 +209,7 @@ export default function Chat() {
                 ...prev,
                 messages: [...prev.messages, aiMessage],
                 isThinking: false,
+                isStreaming: true,
             }));
         } catch (error) {
             setChatState((prev) => ({
@@ -212,27 +223,33 @@ export default function Chat() {
         }
     }, []);
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setChatState((prev) => ({ ...prev, input: e.target.value }));
-    };
+    const handleInputChange = useCallback(
+        (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+            setChatState((prev) => ({ ...prev, input: e.target.value }));
+        },
+        []
+    );
 
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            if (textareaRef.current) {
-                const form = textareaRef.current.closest('form');
-                if (form) {
-                    const submitEvent = new Event('submit', {
-                        cancelable: true,
-                        bubbles: true,
-                    });
-                    form.dispatchEvent(submitEvent);
+    const handleKeyDown = useCallback(
+        (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                if (textareaRef.current) {
+                    const form = textareaRef.current.closest('form');
+                    if (form) {
+                        const submitEvent = new Event('submit', {
+                            cancelable: true,
+                            bubbles: true,
+                        });
+                        form.dispatchEvent(submitEvent);
+                    }
                 }
             }
-        }
-    };
+        },
+        []
+    );
 
-    const handleQuickReply = (reply: string) => {
+    const handleQuickReply = useCallback((reply: string) => {
         setChatState((prev) => ({ ...prev, input: reply }));
         setTimeout(() => {
             if (textareaRef.current) {
@@ -246,11 +263,13 @@ export default function Chat() {
                 }
             }
         }, 100);
-    };
+    }, []);
 
-    const dismissError = () => {
+    const dismissError = useCallback(() => {
         setChatState((prev) => ({ ...prev, error: null }));
-    };
+    }, []);
+
+    console.log(chatState.isStreaming);
 
     if (isMobile) {
         return (
@@ -288,27 +307,39 @@ export default function Chat() {
                     {/* Messages */}
                     <div className="pt-2">
                         <AnimatePresence mode="popLayout">
-                            {chatState.messages.map((message, index) => (
-                                <ChatMessage
-                                    key={message.id}
-                                    message={message}
-                                    index={index}
-                                    onQuickReply={handleQuickReply}
-                                    disabled={chatState.isThinking}
-                                    isLastUser={
-                                        (chatState.messages.length - 1 ===
-                                            index ||
-                                            chatState.messages.length - 2 ===
-                                                index) &&
-                                        message.role === 'user'
-                                    }
-                                    isLastAssistant={
-                                        chatState.messages.length - 1 ===
-                                            index &&
-                                        message.role === 'assistant'
-                                    }
-                                />
-                            ))}
+                            {chatState.messages.map((message, index) => {
+                                const isLastAssistant =
+                                    chatState.messages.length - 1 === index &&
+                                    message.role === 'assistant';
+                                return (
+                                    <ChatMessage
+                                        key={message.id}
+                                        message={message}
+                                        index={index}
+                                        onQuickReply={handleQuickReply}
+                                        disabled={chatState.isThinking}
+                                        isLastUser={
+                                            (chatState.messages.length - 1 ===
+                                                index ||
+                                                chatState.messages.length -
+                                                    2 ===
+                                                    index) &&
+                                            message.role === 'user'
+                                        }
+                                        isLastAssistant={isLastAssistant}
+                                        stream={
+                                            isLastAssistant &&
+                                            chatState.isStreaming
+                                        }
+                                        onStreamEnd={() =>
+                                            setChatState((prev) => ({
+                                                ...prev,
+                                                isStreaming: false,
+                                            }))
+                                        }
+                                    />
+                                );
+                            })}
 
                             {chatState.isThinking && (
                                 <motion.div key="thinking">
@@ -403,31 +434,53 @@ export default function Chat() {
                             <div className="pt-4">
                                 <AnimatePresence mode="popLayout">
                                     {chatState.messages.map(
-                                        (message, index) => (
-                                            <ChatMessage
-                                                key={message.id}
-                                                message={message}
-                                                index={index}
-                                                onQuickReply={handleQuickReply}
-                                                disabled={chatState.isThinking}
-                                                isLastUser={
-                                                    (chatState.messages.length -
-                                                        1 ===
-                                                        index ||
-                                                        chatState.messages
+                                        (message, index) => {
+                                            const isLastAssistant =
+                                                chatState.messages.length -
+                                                    1 ===
+                                                    index &&
+                                                message.role === 'assistant';
+                                            return (
+                                                <ChatMessage
+                                                    key={message.id}
+                                                    message={message}
+                                                    index={index}
+                                                    onQuickReply={
+                                                        handleQuickReply
+                                                    }
+                                                    disabled={
+                                                        chatState.isThinking
+                                                    }
+                                                    isLastUser={
+                                                        (chatState.messages
                                                             .length -
-                                                            2 ===
-                                                            index) &&
-                                                    message.role === 'user'
-                                                }
-                                                isLastAssistant={
-                                                    chatState.messages.length -
-                                                        1 ===
-                                                        index &&
-                                                    message.role === 'assistant'
-                                                }
-                                            />
-                                        )
+                                                            1 ===
+                                                            index ||
+                                                            chatState.messages
+                                                                .length -
+                                                                2 ===
+                                                                index) &&
+                                                        message.role === 'user'
+                                                    }
+                                                    isLastAssistant={
+                                                        isLastAssistant
+                                                    }
+                                                    stream={
+                                                        isLastAssistant &&
+                                                        chatState.isStreaming
+                                                    }
+                                                    onStreamEnd={() =>
+                                                        setChatState(
+                                                            (prev) => ({
+                                                                ...prev,
+                                                                isStreaming:
+                                                                    false,
+                                                            })
+                                                        )
+                                                    }
+                                                />
+                                            );
+                                        }
                                     )}
 
                                     {chatState.isThinking && (
