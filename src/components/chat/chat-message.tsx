@@ -37,8 +37,6 @@ interface ChatMessageProps {
     isHighlighted?: boolean;
     isLastUser: boolean;
     isLastAssistant: boolean;
-    voiceURI?: string;
-    voiceLangId?: string;
 }
 
 function formatTimestamp(date: Date) {
@@ -139,7 +137,8 @@ function ActionButtons({
                     </>
                 ) : (
                     <>
-                        <Volume2Icon className="w-3 h-3 text-purple-500" /> Bacakan
+                        <Volume2Icon className="w-3 h-3 text-purple-500" />{' '}
+                        Bacakan
                     </>
                 )}
             </Button>
@@ -151,7 +150,8 @@ function ActionButtons({
             >
                 {copied ? (
                     <>
-                        <Check className="w-3 h-3 text-green-600" /> Berhasil disalin
+                        <Check className="w-3 h-3 text-green-600" /> Berhasil
+                        disalin
                     </>
                 ) : (
                     <>
@@ -199,7 +199,9 @@ function AIMessage({
                         {message.answer_system === 'intent' && (
                             <span className="text-xs  px-2 py-1 rounded-full bg-purple-600/10 text-purple-600/80 flex items-center gap-x-1">
                                 <VerifiedIcon className="size-3" />
-                                <span className="hidden sm:block">jawaban terverifikasi</span>
+                                <span className="hidden sm:block">
+                                    jawaban terverifikasi
+                                </span>
                             </span>
                         )}
                     </div>
@@ -212,10 +214,14 @@ function AIMessage({
                     </div>
                     <div className="mt-4 flex items-start flex-wrap gap-2">
                         {message.attachments?.map((attachment, index) => (
-                            <AttachmentCard key={index} attachment={attachment} />
+                            <AttachmentCard
+                                key={index}
+                                attachment={attachment}
+                            />
                         ))}
                     </div>
-                    {(!message.quickReplies || message.quickReplies.length < 1) && (
+                    {(!message.quickReplies ||
+                        message.quickReplies.length < 1) && (
                         <ActionButtons
                             speechStatus={speechStatus}
                             startSound={startSound}
@@ -227,17 +233,20 @@ function AIMessage({
                     <div className="mt-4 text-xs text-grey-400">
                         <span>{formatTimestamp(message.timestamp)}</span>
                     </div>
-                    {message.quickReplies && message.quickReplies.length > 0 && (
-                        <div className="mt-4">
-                            <p className="font-semibold text-sm">Ajukan pertanyaan lainnya</p>
-                            <QuickReplies
-                                replies={message.quickReplies}
-                                onReplySelect={onQuickReply}
-                                className="sm:justify-start"
-                                disabled={disabled}
-                            />
-                        </div>
-                    )}
+                    {message.quickReplies &&
+                        message.quickReplies.length > 0 && (
+                            <div className="mt-4">
+                                <p className="font-semibold text-sm">
+                                    Ajukan pertanyaan lainnya
+                                </p>
+                                <QuickReplies
+                                    replies={message.quickReplies}
+                                    onReplySelect={onQuickReply}
+                                    className="sm:justify-start"
+                                    disabled={disabled}
+                                />
+                            </div>
+                        )}
                 </div>
             </div>
         </div>
@@ -245,26 +254,26 @@ function AIMessage({
 }
 
 const ChatMessage = React.forwardRef<HTMLDivElement, ChatMessageProps>(
-    ({
-        message,
-        index,
-        onQuickReply,
-        disabled,
-        isHighlighted,
-        isLastUser,
-        isLastAssistant,
-        voiceURI,
-        voiceLangId,
-    }, ref) => {
+    (
+        {
+            message,
+            index,
+            onQuickReply,
+            disabled,
+            isHighlighted,
+            isLastUser,
+            isLastAssistant,
+        },
+        ref
+    ) => {
         const {
             start: startSound,
             stop: stopSound,
             speechStatus,
         } = useSpeech({
             text: message.content,
-            highlightMode: 'sentence',
-            lang: voiceLangId,
-            voiceURI: voiceURI || undefined,
+            lang: 'id-ID',
+            voiceURI: 'Google Bahasa Indonesia',
         });
         const [copied, setCopied] = useState(false);
         const isUser = message.role === 'user';
@@ -293,7 +302,9 @@ const ChatMessage = React.forwardRef<HTMLDivElement, ChatMessageProps>(
                     delay: Math.min(index * 0.05, 0.5),
                     ease: 'easeOut',
                 }}
-                className={`w-full mb-6 sm:mb-8 ${isHighlighted ? 'bg-yellow-50/50 rounded-lg p-2 -m-2' : ''}`}
+                className={`w-full mb-6 sm:mb-8 ${
+                    isHighlighted ? 'bg-yellow-50/50 rounded-lg p-2 -m-2' : ''
+                }`}
                 id={elementId}
                 ref={ref}
             >

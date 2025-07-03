@@ -36,13 +36,6 @@ export default function Chat() {
         conversationStarted: false,
     });
     const [bottomSpaceHeight, setBottomSpaceHeight] = useState(0);
-    const { voices } = useVoices();
-    const voiceURI = useMemo(
-        () =>
-            voices.find((v) => v.name === 'Google Bahasa Indonesia')?.voiceURI,
-        [voices]
-    );
-    const voiceLangId = 'id-ID';
 
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -302,8 +295,6 @@ export default function Chat() {
                                     index={index}
                                     onQuickReply={handleQuickReply}
                                     disabled={chatState.isThinking}
-                                    voiceURI={voiceURI}
-                                    voiceLangId={voiceLangId}
                                     isLastUser={
                                         (chatState.messages.length - 1 ===
                                             index ||
@@ -419,8 +410,6 @@ export default function Chat() {
                                                 index={index}
                                                 onQuickReply={handleQuickReply}
                                                 disabled={chatState.isThinking}
-                                                voiceURI={voiceURI}
-                                                voiceLangId={voiceLangId}
                                                 isLastUser={
                                                     (chatState.messages.length -
                                                         1 ===
