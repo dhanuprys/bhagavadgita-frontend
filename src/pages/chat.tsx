@@ -8,7 +8,7 @@ import { Send } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { ChatMessage } from '@/components/chat/optimized-chat-message';
+import { ChatMessage } from '@/components/chat/chat-message';
 import { ChatHeader } from '@/components/chat/chat-header';
 import { ThinkingAnimation } from '@/components/chat/thinking-animation';
 import { ErrorAlert } from '@/components/chat/error-alert';
