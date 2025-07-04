@@ -200,7 +200,7 @@ function AIMessage({
     useEffect(() => {
         if (stream) {
             let content = '';
-            const delay = message.content.length > 100 ? 50 : 70;
+            const delay = 15;
             const extendChunk = (message: string) => {
                 if (message.length <= 0) {
                     // basis
