@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Menu, X, Home, MessageCircle, Search } from 'lucide-react';
+import { Menu, X, Home, MessageCircle, Search, Server } from 'lucide-react';
 import { QuickNavigation } from './quick-navigation';
 import { NavLink } from 'react-router';
 
@@ -59,6 +59,17 @@ export function MobileNavigation() {
                                 <MessageCircle className="w-5 h-5 text-violet-600" />
                                 <span className="font-medium text-gray-900">
                                     Chat BhagavadAI
+                                </span>
+                            </NavLink>
+
+                            <NavLink
+                                to="/api-docs"
+                                onClick={() => setIsOpen(false)}
+                                className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+                            >
+                                <Server className="w-5 h-5 text-indigo-600" />
+                                <span className="font-medium text-gray-900">
+                                    Dokumentasi API
                                 </span>
                             </NavLink>
                         </div>

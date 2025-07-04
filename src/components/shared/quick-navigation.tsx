@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Search, BookOpen } from 'lucide-react';
+import { Search, BookOpen, Server } from 'lucide-react';
 import { chapters } from '@/lib/data';
 import { NavLink } from 'react-router';
 
@@ -85,16 +85,39 @@ export function QuickNavigation() {
                                             </div>
                                         </NavLink>
                                     ))}
+
+                                    {/* API Documentation Link */}
+                                    <NavLink
+                                        to="/api-docs"
+                                        onClick={() => setIsOpen(false)}
+                                        className="block p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200 border elegant-border bg-gray-50/50"
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-8 h-8 rounded-full bg-violet-100 flex items-center justify-center flex-shrink-0">
+                                                <Server className="w-4 h-4 text-violet-700" />
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <h4 className="text-sm font-medium text-gray-900 truncate">
+                                                    Dokumentasi API
+                                                </h4>
+                                                <p className="text-xs text-gray-500 truncate">
+                                                    Sumber daya pengembang dan
+                                                    referensi API
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </NavLink>
                                 </div>
 
-                                {filteredChapters.length === 0 && (
-                                    <div className="text-center py-8 text-gray-500">
-                                        <BookOpen className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                                        <p className="text-sm">
-                                            Tidak ada bab yang ditemukan
-                                        </p>
-                                    </div>
-                                )}
+                                {filteredChapters.length === 0 &&
+                                    searchQuery && (
+                                        <div className="text-center py-8 text-gray-500">
+                                            <BookOpen className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                                            <p className="text-sm">
+                                                Tidak ada bab yang ditemukan
+                                            </p>
+                                        </div>
+                                    )}
                             </div>
                         </CardContent>
                     </Card>

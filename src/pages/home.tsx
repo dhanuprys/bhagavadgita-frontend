@@ -5,6 +5,7 @@ import Hero from '@/components/home/hero';
 import Chapters from '@/components/home/chapters';
 import SafeWidth from '@/components/safe-width';
 import About from '@/components/home/about';
+import ApiAnnouncement from '@/components/home/api-announcement';
 import { useTitle } from '@/hooks/use-title';
 
 export default function HomePage() {
@@ -25,6 +26,8 @@ export default function HomePage() {
             <Hero />
 
             <About />
+
+            <ApiAnnouncement />
 
             <SafeWidth>
                 <ChatAdvertisement />
